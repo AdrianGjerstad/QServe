@@ -106,7 +106,17 @@ class QServeServerHandler(BaseHTTPRequestHandler):
             if data == '<DEFAULT>':
                 data = '403 Forbidden'
             else:
-                data = open(data[1:], 'r').read()
+                data_ = open(data[1:], 'r').read()
+                if data.endswith('.html') or data.endswith('.htm'):
+                    # Inject Natives
+                    scr = "<script>const QSERVE_PROBLEMATIC_FILENAME='%s';const QSERVE_HTTP_CODE=%i;</script>\n" % (
+                        self.path,
+                        403
+                    )
+
+                    data_ = scr + data_
+
+                data = data_
             self.send_response(403)
         else:
             try:
@@ -117,8 +127,33 @@ class QServeServerHandler(BaseHTTPRequestHandler):
                     data = self.server.code_overrides.get('404', '<DEFAULT>')
                     if data == '<DEFAULT>':
                         data = '404 Not Found'
+                    else:
+                        data_ = open(data[1:], 'r').read()
+                        if data.endswith('.html') or data.endswith('.htm'):
+                            # Inject Natives
+                            scr = "<script>const QSERVE_PROBLEMATIC_FILENAME='%s';const QSERVE_HTTP_CODE=%i;</script>\n" % (
+                                self.path,
+                                404
+                            )
+
+                            data_ = scr + data_
+
+                        data = data_
                 else:
-                    data = '404 Not Found'
+                    if self.server.code_overrides.get('404') is not None:
+                        data_ = open(data[1:], 'r').read()
+                        if data.endswith('.html') or data.endswith('.htm'):
+                            # Inject Natives
+                            scr = "<script>const QSERVE_PROBLEMATIC_FILENAME='%s';const QSERVE_HTTP_CODE=%i;</script>\n" % (
+                                self.path,
+                                404
+                            )
+
+                            data_ = scr + data_
+
+                        data = data_
+                    else:
+                        data = '404 Not Found'
                 self.send_response(404)
 
         self.end_headers()
