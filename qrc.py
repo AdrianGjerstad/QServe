@@ -11,10 +11,16 @@ def parse(data):
     for i in range(len(lines)):
         if lines[i].endswith('\r'):
             lines[i] = lines[i][0:len(lines[i])-1]
+        
+        if lines[i] == '':
+          continue
 
         lines[i] = tuple(lines[i].split(' - '))
 
     for i in range(len(lines)):
+        if len(list(lines[i])) != 2:
+          continue
+
         r, v = lines[i]
 
         if len(r) == 3:

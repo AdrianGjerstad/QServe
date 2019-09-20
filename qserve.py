@@ -141,6 +141,7 @@ class QServeServerHandler(BaseHTTPRequestHandler):
                         data = data_
                 else:
                     if self.server.code_overrides.get('404') is not None:
+                        data = self.server.code_overrides.get('404', '<DEFAULT>')
                         data_ = open(data[1:], 'r').read()
                         if data.endswith('.html') or data.endswith('.htm'):
                             # Inject Natives
