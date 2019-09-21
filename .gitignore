@@ -1,0 +1,9 @@
+# Log files
+*.log
+
+# QServe files
+.qrc
+
+# Test HTML files
+*.html
+*.htm
