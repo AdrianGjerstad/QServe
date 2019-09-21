@@ -101,6 +101,24 @@ class QServeServerHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             self.path = '/index.html'
 
+        # Part of QSSPa19w38M
+        if self.path.startswith('//') or self.path.startswith('/~') or self.path.startswith('/..'):
+            data = self.server.code_overrides.get('404', '<DEFAULT>')
+            if data == '<DEFAULT>':
+                data = '404 Not Found'
+            else:
+                data_ = open(data[1:], 'r').read()
+                if data.endswith('.html') or data.endswith('.htm'):
+                    # Inject Natives
+                    scr = "<script>const QSERVE_PROBLEMATIC_FILENAME='%s';const QSERVE_HTTP_CODE=%i;</script>\n" % (
+                        self.path,
+                        404
+                    )
+
+                    data_ = scr + data_
+
+                data = data_
+
         if self.server.code_triggers.get(self.path) == '403':
             data = self.server.code_overrides.get('403', '<DEFAULT>')
             if data == '<DEFAULT>':
