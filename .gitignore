@@ -7,3 +7,9 @@
 # Test HTML files
 *.html
 *.htm
+
+# Python Bytecode
+*.pyc
+*.pyd
+*.pyx
+*.cpython.*
